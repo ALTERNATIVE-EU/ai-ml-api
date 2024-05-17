@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request, send_file
 import pandas as pd
 from keycloak import KeycloakOpenID
-from ML import inference as ML
-from AI import inference as AI
+from PipelineAlternative_clinicaldata.ML_apical import inference as ML
+from PipelineAlternative_clinicaldata.AI import inference as AI
 from dotenv import load_dotenv
 import os
 
@@ -31,14 +31,24 @@ def evaluate():
 
     try:
         ML.check_smiles(smiles)
-        models, descriptors, pipeline = ML.import_models()
+        print("[INFO]: Models import...")
+        models = ML.import_models()
+        print("done")
+        print("[INFO]: calculate CDDD descriptors for target...")
         target_CDDD = ML.cddd_calculation(smiles)
-        target_MD = ML.mordred_descriptors(smiles)
+        print("done")
+        print("[INFO]: AD_evaluation...")
         ad_results = ML.ad_evaluation(smiles)
-        data_mie, data_ke1, data_ke2 = ML.transform_data(target_MD, target_CDDD, descriptors, pipeline, models)
-        results = ML.inference(smiles, data_mie, data_ke1, data_ke2, models)
+
+        data = ML.transform_data(target_CDDD=target_CDDD, models=models)
+
+        results = ML.inference(smiles=smiles, data=data, models=models)
+
         merged_df = pd.merge(results, ad_results, left_index=True, right_index=True)
+
         merged_df.to_csv('results.csv')
+        
+        print("done..")
 
         return send_file('results.csv', as_attachment=True)
     except Exception as e:
@@ -57,9 +67,14 @@ def evaluate_ai():
         target_NLP = AI.prepare_smiles_NLP(smiles)
         ad_results = AI.ad_evaluation(smiles)
         inference = AI.inference_NLP(model_NLP, target_NLP)
+        
         return jsonify({"prediction": inference})
     except Exception as e:
         return str(e), 500
+    
+    
+
+    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
