@@ -59,3 +59,11 @@ IsAlive:
 ```sh
 curl http://localhost:5000/isalive
 ```
+
+## Testing
+
+To run the tests:
+
+```sh
+python -m unittest app_test.py
+```
