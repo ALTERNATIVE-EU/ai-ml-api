@@ -10,23 +10,26 @@ import traceback
 load_dotenv()
 
 # Keycloak Config
-KEYCLOAK_URL = os.getenv('KEYCLOAK_URL')
-KEYCLOAK_REALM = os.getenv('KEYCLOAK_REALM')
-KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOAK_CLIENT_ID')
-KEYCLOAK_CLIENT_SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET')
+KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
+KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
+KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET")
 
 # Keycloak client
-keycloak_openid = KeycloakOpenID(server_url=KEYCLOAK_URL,
-                                 client_id=KEYCLOAK_CLIENT_ID,
-                                 realm_name=KEYCLOAK_REALM,
-                                 client_secret_key=KEYCLOAK_CLIENT_SECRET)
+keycloak_openid = KeycloakOpenID(
+    server_url=KEYCLOAK_URL,
+    client_id=KEYCLOAK_CLIENT_ID,
+    realm_name=KEYCLOAK_REALM,
+    client_secret_key=KEYCLOAK_CLIENT_SECRET,
+)
 
 app = Flask(__name__)
 
-@app.route('/ml/evaluate', methods=['POST'])
+
+@app.route("/ml/evaluate", methods=["POST"])
 def evaluate():
     data = request.get_json()
-    smiles = data.get('smiles')
+    smiles = data.get("smiles")
     if not smiles:
         return jsonify({"error": "No SMILES input provided"}), 400
 
@@ -47,19 +50,20 @@ def evaluate():
 
         merged_df = pd.merge(results, ad_results, left_index=True, right_index=True)
 
-        merged_df.to_csv('results.csv')
-        
+        merged_df.to_csv("results.csv")
+
         print("done..")
 
-        return send_file('results.csv', as_attachment=True)
+        return send_file("results.csv", as_attachment=True)
     except Exception as e:
         traceback.print_exc()
         return str(e), 500
 
-@app.route('/ai/evaluate', methods=['POST'])
+
+@app.route("/ai/evaluate", methods=["POST"])
 def evaluate_ai():
     data = request.get_json()
-    smiles = data.get('smiles')
+    smiles = data.get("smiles")
     if not smiles:
         return jsonify({"error": "No SMILES input provided"}), 400
 
@@ -69,14 +73,16 @@ def evaluate_ai():
         target_NLP = AI.prepare_smiles_NLP(smiles)
         ad_results = AI.ad_evaluation(smiles)
         inference = AI.inference_NLP(model_NLP, target_NLP)
-        
+
         return jsonify({"prediction": inference})
-    except Exception as e:        
+    except Exception as e:
         return str(e), 500
-    
-    
 
-    
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+@app.route("/isalive", methods=["GET"])
+def is_alive():
+    return jsonify({"status": "alive"})
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=False)
