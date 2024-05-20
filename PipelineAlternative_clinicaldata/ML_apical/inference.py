@@ -97,7 +97,7 @@ def run_script_in_conda_env(smiles:str):
     """
     You must env the conda env defined by https://github.com/jrwnter/cddd
     """
-    script_path = os.path.join(os.getcwd(), "PipelineAlternative_clinicaldata", "ML_apical", "cddd", "cddd_calculation.py")
+    script_path = os.path.join(os.getcwd(), "cddd", "cddd_calculation.py")
     conda_env = 'cddd'
 
     conda_env_path = os.path.expanduser(f'~/miniconda3/envs/{conda_env}/bin/python')
@@ -114,11 +114,12 @@ def cddd_calculation(smiles:str):
     # Run the script in the other virtual environment with the input argument
     try: 
         run_script_in_conda_env(smiles=smiles)
-        path = os.path.join(os.getcwd(), "PipelineAlternative_clinicaldata", "ML_apical", "smiles_CDDD.csv")
+        path = os.path.join(os.getcwd(), "smiles_CDDD.csv")
         data = pd.read_csv(path)
         os.remove(path)
         return data
-    except: 
+    except Exception as e:
+        print(e)
         print("error in subprocess")
 
 def transform_data(target_CDDD:pd.DataFrame, models:dict):

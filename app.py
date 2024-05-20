@@ -5,6 +5,7 @@ from PipelineAlternative_clinicaldata.ML_apical import inference as ML
 from PipelineAlternative_clinicaldata.AI import inference as AI
 from dotenv import load_dotenv
 import os
+import traceback
 
 load_dotenv()
 
@@ -52,6 +53,7 @@ def evaluate():
 
         return send_file('results.csv', as_attachment=True)
     except Exception as e:
+        traceback.print_exc()
         return str(e), 500
 
 @app.route('/ai/evaluate', methods=['POST'])
@@ -69,7 +71,7 @@ def evaluate_ai():
         inference = AI.inference_NLP(model_NLP, target_NLP)
         
         return jsonify({"prediction": inference})
-    except Exception as e:
+    except Exception as e:        
         return str(e), 500
     
     

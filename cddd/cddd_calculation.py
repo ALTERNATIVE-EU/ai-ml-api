@@ -33,6 +33,6 @@ if __name__ == '__main__':
     smiles_embedding_train = inference_model.seq_to_emb([smiles_preprocess])
     dataset = pd.DataFrame(smiles_embedding_train)
     dataset['SMILES'] = [smiles_preprocess] # per mantenere gli indici
-    parent_directory = os.path.join(os.getcwd(), "PipelineAlternative_clinicaldata", "AOP_models", "smiles_CDDD.csv")
+    parent_directory = os.path.join(os.getcwd(), "smiles_CDDD.csv")
     dataset.to_csv(parent_directory)
     print("done...")
