@@ -3,6 +3,7 @@ import pandas as pd
 from keycloak import KeycloakOpenID
 from PipelineAlternative_clinicaldata.ML_apical import inference as ML
 from PipelineAlternative_clinicaldata.AI import inference as AI
+from PipelineAlternative_clinicaldata.AOP_models import inference as AOP
 from dotenv import load_dotenv
 import os
 import traceback
@@ -76,8 +77,34 @@ def evaluate_ai():
 
         return jsonify({"prediction": inference})
     except Exception as e:
+        traceback.print_exc()
         return str(e), 500
 
+
+@app.route("/aop/evaluate", methods=["POST"])
+def evaluate_aop():
+    data = request.get_json()
+    smiles = data.get("smiles")
+    if not smiles:
+        return jsonify({"error": "No SMILES input provided"}), 400
+
+    try:
+        AOP.check_smiles(smiles)
+        models = AOP.import_models()
+        target_CDDD = AOP.cddd_calculation(smiles)
+        ad_results = AOP.ad_evaluation(smiles)
+        target_dict = AOP.transform_data(models=models, target_CDDD=target_CDDD)
+        results = AOP.inference(models=models, smiles=smiles, target_dict=target_dict)
+        
+        merged_df = pd.merge(results, ad_results, left_index=True, right_index=True)
+        
+        merged_df.to_csv('results.csv')
+        
+        return send_file('results.csv', as_attachment=True)
+    
+    except Exception as e:
+        traceback.print_exc()
+        return str(e), 500
 
 @app.route("/isalive", methods=["GET"])
 def is_alive():
