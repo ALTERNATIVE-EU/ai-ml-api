@@ -5,8 +5,18 @@ This is a API server which provides endpoints for AI/ML models.
 ## Requirements
 
 - Python 3.9
+- PipelineAlternative_clinicaldata data
+- cddd data
 
 ## Installation
+
+Put the `PipelineAlternative_clinicaldata` and `cddd` directories in the root of the project.
+
+Copy the content of `patches` directory into the `PipelineAlternative_clinicaldata` directory.
+
+```sh
+cp -r patches/* PipelineAlternative_clinicaldata/
+```
 
 Install dependencies:
 
