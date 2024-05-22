@@ -5,6 +5,7 @@ This is a API server which provides endpoints for AI/ML models.
 ## Requirements
 
 - Python 3.9
+- Anaconda
 - PipelineAlternative_clinicaldata data
 - cddd data
 
@@ -16,6 +17,24 @@ Copy the content of `patches` directory into the `PipelineAlternative_clinicalda
 
 ```sh
 cp -r patches/* PipelineAlternative_clinicaldata/
+```
+
+Create cddd virtual environment and install dependencies:
+
+```sh
+cd cddd
+conda env create -f environment.yml
+conda activate cddd
+pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.10.0-cp36-cp36m-linux_x86_64.whl
+pip install -e .
+conda deactivate
+```
+
+Create alternative virtual environment:
+
+```sh
+conda create -n alternative python=3.9
+conda activate alternative
 ```
 
 Install dependencies:
