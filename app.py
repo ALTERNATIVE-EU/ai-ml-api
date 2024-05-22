@@ -6,6 +6,7 @@ from PipelineAlternative_clinicaldata.AOP_models import inference as AOP
 from dotenv import load_dotenv
 import os
 import traceback
+import tempfile
 
 load_dotenv()
 
@@ -36,11 +37,13 @@ def evaluate():
 
         merged_df = pd.merge(results, ad_results, left_index=True, right_index=True)
 
-        merged_df.to_csv("results.csv")
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as tmpfile:
+            merged_df.to_csv(tmpfile.name)
+            temp_file_path = tmpfile.name
 
         print("done..")
 
-        return send_file("results.csv", as_attachment=True)
+        return send_file(temp_file_path, as_attachment=True)
     except Exception as e:
         traceback.print_exc()
         return str(e), 500
@@ -82,10 +85,12 @@ def evaluate_aop():
         results = AOP.inference(models=models, smiles=smiles, target_dict=target_dict)
         
         merged_df = pd.merge(results, ad_results, left_index=True, right_index=True)
-        
-        merged_df.to_csv('results.csv')
-        
-        return send_file('results.csv', as_attachment=True)
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as tmpfile:
+            merged_df.to_csv(tmpfile.name)
+            temp_file_path = tmpfile.name
+
+        return send_file(temp_file_path, as_attachment=True)
     
     except Exception as e:
         traceback.print_exc()
