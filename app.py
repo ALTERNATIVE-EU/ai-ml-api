@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request, send_file
 import pandas as pd
-from keycloak import KeycloakOpenID
 from PipelineAlternative_clinicaldata.ML_apical import inference as ML
 from PipelineAlternative_clinicaldata.AI import inference as AI
 from PipelineAlternative_clinicaldata.AOP_models import inference as AOP
@@ -9,20 +8,6 @@ import os
 import traceback
 
 load_dotenv()
-
-# Keycloak Config
-KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
-KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
-KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
-KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET")
-
-# Keycloak client
-keycloak_openid = KeycloakOpenID(
-    server_url=KEYCLOAK_URL,
-    client_id=KEYCLOAK_CLIENT_ID,
-    realm_name=KEYCLOAK_REALM,
-    client_secret_key=KEYCLOAK_CLIENT_SECRET,
-)
 
 app = Flask(__name__)
 
