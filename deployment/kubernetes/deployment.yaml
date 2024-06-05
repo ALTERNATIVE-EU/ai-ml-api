@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: ai-ml-api
-        image: alternative.cr.de-fra.ionos.com/ai-ml-api:v1.0.0
+        image: <image>
         ports:
         - containerPort: 5000

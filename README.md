@@ -63,6 +63,14 @@ Run the container:
 docker run -p 5000:5000 ai-ml-api
 ```
 
+## Deployment in Kubernetes
+
+Update the deployment files in the deployment/kubernetes directory, then apply them:
+
+```sh
+kubectl apply -f deployment/kubernetes
+```
+
 ## Usage
 
 ML:
