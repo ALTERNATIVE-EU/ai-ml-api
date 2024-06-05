@@ -7,6 +7,8 @@ WORKDIR /app
 # Add the current directory contents into the container at /app
 ADD . /app
 
+RUN rm -rf /app/.git
+
 # Install Miniconda
 RUN apt-get update && apt-get install -y wget coreutils libxrender1 libxext6 && rm -rf /var/lib/apt/lists/*
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py39_24.3.0-0-Linux-x86_64.sh -O ~/miniconda.sh
@@ -28,4 +30,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Run app.py when the container launches
-CMD ["python", "app.py"]
+CMD ["gunicorn", "-b", ":5000", "app:app"]

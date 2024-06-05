@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-ml-api
+  labels:
+    app: ai-ml-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-ml-api
+  template:
+    metadata:
+      labels:
+        app: ai-ml-api
+    spec:
+      containers:
+      - name: ai-ml-api
+        image: alternative.cr.de-fra.ionos.com/ai-ml-api:v1.0.0
+        ports:
+        - containerPort: 5000

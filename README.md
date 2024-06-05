@@ -16,7 +16,7 @@ Put the `PipelineAlternative_clinicaldata` and `cddd` directories in the root of
 Copy the content of `patches` directory into the `PipelineAlternative_clinicaldata` directory.
 
 ```sh
-cp -r patches/* PipelineAlternative_clinicaldata/
+cp -r patches/* ./
 ```
 
 Create cddd virtual environment and install dependencies:

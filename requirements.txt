@@ -1,8 +1,9 @@
-deepchem
+deepchem==2.8.0
 Flask==2.3.1
-mordred
-pandas
-python-dotenv
-rdkit
+mordred==1.2.0
+pandas==2.2.2
+python-dotenv==1.0.1
+rdkit==2023.9.5
 tensorflow==2.15.0
-xgboost
+xgboost==2.0.3
+gunicorn==22.0.0
