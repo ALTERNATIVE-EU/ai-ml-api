@@ -13,7 +13,7 @@ load_dotenv()
 app = Flask(__name__)
 
 
-@app.route("/ml/evaluate", methods=["POST"])
+@app.route("/clinicaldata/ml/evaluate", methods=["POST"])
 def evaluate():
     data = request.get_json()
     smiles = data.get("smiles")
@@ -49,7 +49,7 @@ def evaluate():
         return str(e), 500
 
 
-@app.route("/ai/evaluate", methods=["POST"])
+@app.route("/clinicaldata/ai/evaluate", methods=["POST"])
 def evaluate_ai():
     data = request.get_json()
     smiles = data.get("smiles")
@@ -69,7 +69,7 @@ def evaluate_ai():
         return str(e), 500
 
 
-@app.route("/aop/evaluate", methods=["POST"])
+@app.route("/clinicaldata/aop/evaluate", methods=["POST"])
 def evaluate_aop():
     data = request.get_json()
     smiles = data.get("smiles")
