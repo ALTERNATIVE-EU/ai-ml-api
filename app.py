@@ -37,13 +37,13 @@ def evaluate():
 
         merged_df = pd.merge(results, ad_results, left_index=True, right_index=True)
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as tmpfile:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".csv", prefix="results_") as tmpfile:
             merged_df.to_csv(tmpfile.name)
             temp_file_path = tmpfile.name
 
         print("done..")
 
-        return send_file(temp_file_path, as_attachment=True)
+        return send_file(temp_file_path, as_attachment=True, download_name="results.csv")
     except Exception as e:
         traceback.print_exc()
         return str(e), 500
@@ -86,11 +86,11 @@ def evaluate_aop():
         
         merged_df = pd.merge(results, ad_results, left_index=True, right_index=True)
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as tmpfile:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".csv", prefix="results_") as tmpfile:
             merged_df.to_csv(tmpfile.name)
             temp_file_path = tmpfile.name
 
-        return send_file(temp_file_path, as_attachment=True)
+        return send_file(temp_file_path, as_attachment=True, download_name="results.csv")
     
     except Exception as e:
         traceback.print_exc()

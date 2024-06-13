@@ -41,26 +41,26 @@ class TestApp(unittest.TestCase):
         mock_inference.return_value = pd.DataFrame()
         mock_merge.return_value = pd.DataFrame()
 
-        response = self.app.post("/ml/evaluate", json={"smiles": "CCO"})
+        response = self.app.post("/clinicaldata/ml/evaluate", json={"smiles": "CCO"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.headers["Content-Disposition"], "attachment; filename=results.csv"
         )
 
     def test_ml_evaluate_no_smiles(self):
-        response = self.app.post("/ml/evaluate", json={})
+        response = self.app.post("/clinicaldata/ml/evaluate", json={})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {"error": "No SMILES input provided"})
 
     def test_ml_evaluate_empty_smiles(self):
-        response = self.app.post("/ml/evaluate", json={"smiles": ""})
+        response = self.app.post("/clinicaldata/ml/evaluate", json={"smiles": ""})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {"error": "No SMILES input provided"})
 
     @patch("PipelineAlternative_clinicaldata.ML_apical.inference.check_smiles")
     def test_ml_evaluate_check_smiles_exception(self, mock_check_smiles):
         mock_check_smiles.side_effect = Exception("Check SMILES Error")
-        response = self.app.post("/ml/evaluate", json={"smiles": "CCO"})
+        response = self.app.post("/clinicaldata/ml/evaluate", json={"smiles": "CCO"})
         self.assertEqual(response.status_code, 500)
         self.assertIn("Check SMILES Error", response.get_data(as_text=True))
 
@@ -84,24 +84,24 @@ class TestApp(unittest.TestCase):
         mock_ad_evaluation.return_value = pd.DataFrame()
         mock_inference_NLP.return_value = "inference"
 
-        response = self.app.post("/ai/evaluate", json={"smiles": "CCO"})
+        response = self.app.post("/clinicaldata/ai/evaluate", json={"smiles": "CCO"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json, {"prediction": "inference"})
 
     def test_ai_evaluate_no_smiles(self):
-        response = self.app.post("/ai/evaluate", json={})
+        response = self.app.post("/clinicaldata/ai/evaluate", json={})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {"error": "No SMILES input provided"})
 
     def test_ai_evaluate_empty_smiles(self):
-        response = self.app.post("/ai/evaluate", json={"smiles": ""})
+        response = self.app.post("/clinicaldata/ai/evaluate", json={"smiles": ""})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {"error": "No SMILES input provided"})
 
     @patch("PipelineAlternative_clinicaldata.AI.inference.check_smiles")
     def test_ai_evaluate_check_smiles_exception(self, mock_check_smiles):
         mock_check_smiles.side_effect = Exception("Check SMILES Error")
-        response = self.app.post("/ai/evaluate", json={"smiles": "CCO"})
+        response = self.app.post("/clinicaldata/ai/evaluate", json={"smiles": "CCO"})
         self.assertEqual(response.status_code, 500)
         self.assertIn("Check SMILES Error", response.get_data(as_text=True))
 
@@ -132,26 +132,26 @@ class TestApp(unittest.TestCase):
         mock_inference.return_value = pd.DataFrame()
         mock_merge.return_value = pd.DataFrame()
 
-        response = self.app.post("/aop/evaluate", json={"smiles": "CCO"})
+        response = self.app.post("/clinicaldata/aop/evaluate", json={"smiles": "CCO"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.headers["Content-Disposition"], "attachment; filename=results.csv"
         )
 
     def test_aop_evaluate_no_smiles(self):
-        response = self.app.post("/aop/evaluate", json={})
+        response = self.app.post("/clinicaldata/aop/evaluate", json={})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {"error": "No SMILES input provided"})
 
     def test_aop_evaluate_empty_smiles(self):
-        response = self.app.post("/aop/evaluate", json={"smiles": ""})
+        response = self.app.post("/clinicaldata/aop/evaluate", json={"smiles": ""})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {"error": "No SMILES input provided"})
 
     @patch("PipelineAlternative_clinicaldata.AOP_models.inference.check_smiles")
     def test_aop_evaluate_check_smiles_exception(self, mock_check_smiles):
         mock_check_smiles.side_effect = Exception("Check SMILES Error")
-        response = self.app.post("/aop/evaluate", json={"smiles": "CCO"})
+        response = self.app.post("/clinicaldata/aop/evaluate", json={"smiles": "CCO"})
         self.assertEqual(response.status_code, 500)
         self.assertIn("Check SMILES Error", response.get_data(as_text=True))
 
