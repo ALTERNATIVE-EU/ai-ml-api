@@ -108,7 +108,7 @@ def run_script_in_conda_env(smiles:str, singlesmiles=True):
 
     if singlesmiles: 
         print("SINGLE MOLECULE")
-        command = f"{conda_env_path} {script_path} --smiles '{smiles}'"
+        command = f"{conda_env_path} {script_path} --smiles \"{smiles}\""
     else:  
         print("DATASET OF MOLECULEs")
         command = f"{conda_env_path} {script_path} --file {smiles}"

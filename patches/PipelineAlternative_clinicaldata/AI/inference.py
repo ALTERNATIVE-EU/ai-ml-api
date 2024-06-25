@@ -79,7 +79,7 @@ def run_script_in_conda_env(smiles:str):
     
     conda_env_path = os.path.expanduser(f'~/miniconda3/envs/{conda_env}/bin/python')
     
-    command = f"{conda_env_path} {script_path} --smiles {smiles}"
+    command = f"{conda_env_path} {script_path} --smiles \"{smiles}\""
     # Run the entire command
     subprocess.run(command, shell=True, check=True)
 
