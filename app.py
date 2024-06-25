@@ -76,7 +76,7 @@ def evaluate_ai():
         logger.debug("AD evaluation completed")
         inference_result = AI.inference_NLP(model_NLP, target_NLP)
         logger.debug("Inference completed")
-        return jsonify({"prediction": inference_result, "ad_results": ad_results})
+        return jsonify({"prediction": inference_result})
     except Exception as e:
         logger.error("Exception during AI evaluation", exc_info=True)
         return jsonify({"error": str(e)}), 500
