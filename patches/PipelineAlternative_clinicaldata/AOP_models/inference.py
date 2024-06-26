@@ -24,7 +24,7 @@ def ad_evaluation(smiles:str, radius=3, num_bits=1024, singlesmiles=False):
     """
     fp1 = AllChem.GetMorganFingerprintAsBitVect(Chem.MolFromSmiles(smiles), radius, nBits=num_bits)
     ad_results = {}
-    path_folder = os.path.join(os.getcwd(), "PipelineAlternative_clinicaldata", "AOP_models", "data")
+    path_folder = os.path.join(os.getcwd(), "models", "PipelineAlternative_clinicaldata", "AOP_models", "data")
     for file in os.listdir(path_folder):
         print(file)
         path_folder_endpoint = os.path.join(path_folder, file)
@@ -47,7 +47,7 @@ def ad_evaluation(smiles:str, radius=3, num_bits=1024, singlesmiles=False):
 def import_models():
     "import models find in BestModels_ML_90_10 folder"
 
-    path = os.path.join(os.getcwd(), "PipelineAlternative_clinicaldata", "AOP_models", "models")
+    path = os.path.join(os.getcwd(), "models", "PipelineAlternative_clinicaldata", "AOP_models", "models")
     models_path = {file.split("_")[0]:os.path.join(path, file) for file in os.listdir(path)}
 
     # import ML models
@@ -85,7 +85,7 @@ def run_script_in_conda_env(smiles:str, singlesmiles=True):
     """
     You must env the conda env defined by https://github.com/jrwnter/cddd
     """
-    script_path = os.path.join(os.getcwd(), "cddd", "cddd_calculation.py")
+    script_path = os.path.join(os.getcwd(), "models", "PipelineAlternative_clinicaldata", "cddd", "cddd_calculation.py")
     conda_env = 'cddd'
     
     conda_env_path = os.path.expanduser(f'~/miniconda3/envs/{conda_env}/bin/python')
@@ -112,8 +112,9 @@ def cddd_calculation(smiles:str, singlesmiles=True):
         data = pd.read_csv(path)
         os.remove(path)
         return data
-    except: 
-        print("error in subprocess")
+    except Exception as e:
+        print("Error in cddd calculation")
+        print(e)
 
 def transform_data(models:dict, target_CDDD:pd.DataFrame):
     """

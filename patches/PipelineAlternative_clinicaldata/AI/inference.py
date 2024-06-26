@@ -48,7 +48,7 @@ def ad_evaluation(smiles:str, radius=3, num_bits=1024):
     """
     fp1 = AllChem.GetMorganFingerprintAsBitVect(Chem.MolFromSmiles(smiles), radius, nBits=num_bits)
     ad_results = {}
-    path_folder = os.path.join(os.getcwd(), "PipelineAlternative_clinicaldata", "AI", "data", "data.csv")
+    path_folder = os.path.join(os.getcwd(), "models", "PipelineAlternative_clinicaldata", "AI", "data", "data.csv")
     data = pd.read_csv(path_folder)
     smiles_list = list(data['SMILES'])
     counter = 0
@@ -64,7 +64,7 @@ def ad_evaluation(smiles:str, radius=3, num_bits=1024):
 
 def import_NLP_model():
     "import models find in"
-    path = os.path.join(os.getcwd(), "PipelineAlternative_clinicaldata", "AI", "charsEmbeddingAugemted_90_10")
+    path = os.path.join(os.getcwd(), "models", "PipelineAlternative_clinicaldata", "AI", "charsEmbeddingAugemted_90_10")
     path_model = os.path.join(path, "Model_charsEmbeddingAugemted")
     return tf.keras.models.load_model(path_model)
 
@@ -74,7 +74,7 @@ def run_script_in_conda_env(smiles:str):
     """
     You must env the conda env defined by https://github.com/jrwnter/cddd
     """
-    script_path = os.path.join(os.getcwd(), "cddd", "cddd_calculation.py")
+    script_path = os.path.join(os.getcwd(), "models", "PipelineAlternative_clinicaldata", "cddd", "cddd_calculation.py")
     conda_env = 'cddd'
     
     conda_env_path = os.path.expanduser(f'~/miniconda3/envs/{conda_env}/bin/python')
@@ -95,8 +95,9 @@ def cddd_calculation(smiles:str):
         data = pd.read_csv(path)
         os.remove(path)
         return tf.expand_dims(tf.constant(data.values()))
-    except: 
-        print("error in subprocess")
+    except Exception as e:
+        print(e)
+        sys.exit(1)
 
 def mordred_descriptors(smiles:str):
     # descriptors calculators mordred

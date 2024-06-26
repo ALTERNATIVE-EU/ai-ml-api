@@ -24,7 +24,7 @@ def ad_evaluation(smiles:str, radius=3, num_bits=1024, singlesmiles=False):
     """
     fp1 = AllChem.GetMorganFingerprintAsBitVect(Chem.MolFromSmiles(smiles), radius, nBits=num_bits)
     ad_results = {}
-    path_folder = os.path.join(os.getcwd(), "PipelineAlternative_clinicaldata", "ML_apical", "data")
+    path_folder = os.path.join(os.getcwd(), "models", "PipelineAlternative_clinicaldata", "ML_apical", "data")
     path_folder_endpoint = os.path.join(path_folder, f'train_apical.csv')
     # name = folder.split("_")[0]
     data = pd.read_csv(path_folder_endpoint)
@@ -50,7 +50,7 @@ def ad_evaluation(smiles:str, radius=3, num_bits=1024, singlesmiles=False):
 def import_models():
     "import models find in models_apical folder"
 
-    path = os.path.join(os.getcwd(), "PipelineAlternative_clinicaldata", "ML_apical", "models_apical")
+    path = os.path.join(os.getcwd(), "models", "PipelineAlternative_clinicaldata", "ML_apical", "models_apical")
 
     models_path = [path]
 
@@ -101,7 +101,7 @@ def run_script_in_conda_env(smiles:str, singlesmiles=True):
     """
     You must env the conda env defined by https://github.com/jrwnter/cddd
     """
-    script_path = os.path.join(os.getcwd(), "cddd", "cddd_calculation.py")
+    script_path = os.path.join(os.getcwd(), "models", "PipelineAlternative_clinicaldata", "cddd", "cddd_calculation.py")
     conda_env = 'cddd'
     
     conda_env_path = os.path.expanduser(f'~/miniconda3/envs/{conda_env}/bin/python')
@@ -217,10 +217,10 @@ if __name__ == "__main__":
         ad_results = ad_evaluation(smiles, singlesmiles=True)
         print("done")
 
-        data = transform_data(target_CDDD=target_CDDD)
+        data = transform_data(target_CDDD=target_CDDD, models=models)
         
         results = inference(smiles=smiles, 
-                            data=data)
+                            data=data, models=models)
         
         merged_df = pd.merge(results, ad_results, left_index=True, right_index=True)
         

@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request, send_file
 import pandas as pd
-from PipelineAlternative_clinicaldata.ML_apical import inference as ML
-from PipelineAlternative_clinicaldata.AI import inference as AI
-from PipelineAlternative_clinicaldata.AOP_models import inference as AOP
+from models.PipelineAlternative_clinicaldata.ML_apical import inference as ML
+from models.PipelineAlternative_clinicaldata.AI import inference as AI
+from models.PipelineAlternative_clinicaldata.AOP_models import inference as AOP
 from dotenv import load_dotenv
 import os
 import traceback
