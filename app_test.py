@@ -16,12 +16,12 @@ class TestApp(unittest.TestCase):
         self.app.testing = True
 
     # /ml/evaluate tests
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.check_smiles")
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.import_models")
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.cddd_calculation")
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.ad_evaluation")
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.transform_data")
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.inference")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.import_models")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.cddd_calculation")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.ad_evaluation")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.transform_data")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.inference")
     @patch("pandas.merge")
     def test_ml_evaluate_valid(
         self,
@@ -57,7 +57,7 @@ class TestApp(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {"error": "No SMILES input provided"})
 
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.check_smiles")
     def test_ml_evaluate_check_smiles_exception(self, mock_check_smiles):
         mock_check_smiles.side_effect = Exception("Check SMILES Error")
         response = self.app.post("/clinicaldata/ml/evaluate", json={"smiles": "CCO"})
@@ -65,11 +65,11 @@ class TestApp(unittest.TestCase):
         self.assertIn("Check SMILES Error", response.get_data(as_text=True))
 
     # /ai/evaluate tests
-    @patch("PipelineAlternative_clinicaldata.AI.inference.check_smiles")
-    @patch("PipelineAlternative_clinicaldata.AI.inference.import_NLP_model")
-    @patch("PipelineAlternative_clinicaldata.AI.inference.prepare_smiles_NLP")
-    @patch("PipelineAlternative_clinicaldata.AI.inference.ad_evaluation")
-    @patch("PipelineAlternative_clinicaldata.AI.inference.inference_NLP")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.import_NLP_model")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.prepare_smiles_NLP")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.ad_evaluation")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.inference_NLP")
     def test_ai_evaluate_valid(
         self,
         mock_inference_NLP,
@@ -98,7 +98,7 @@ class TestApp(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {"error": "No SMILES input provided"})
 
-    @patch("PipelineAlternative_clinicaldata.AI.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.check_smiles")
     def test_ai_evaluate_check_smiles_exception(self, mock_check_smiles):
         mock_check_smiles.side_effect = Exception("Check SMILES Error")
         response = self.app.post("/clinicaldata/ai/evaluate", json={"smiles": "CCO"})
@@ -107,12 +107,12 @@ class TestApp(unittest.TestCase):
 
 
     # /aop/evaluate tests
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.check_smiles")
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.import_models")
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.cddd_calculation")
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.ad_evaluation")
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.transform_data")
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.inference")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.import_models")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.cddd_calculation")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.ad_evaluation")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.transform_data")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.inference")
     @patch("pandas.merge")
     def test_aop_evaluate_valid(
         self,
@@ -148,7 +148,7 @@ class TestApp(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {"error": "No SMILES input provided"})
 
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.check_smiles")
     def test_aop_evaluate_check_smiles_exception(self, mock_check_smiles):
         mock_check_smiles.side_effect = Exception("Check SMILES Error")
         response = self.app.post("/clinicaldata/aop/evaluate", json={"smiles": "CCO"})
