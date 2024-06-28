@@ -1,13 +1,16 @@
-from flask import Flask, jsonify, request, send_file
-import pandas as pd
-from models.PipelineAlternative_clinicaldata.ML_apical import inference as ML
-from models.PipelineAlternative_clinicaldata.AI import inference as AI
-from models.PipelineAlternative_clinicaldata.AOP_models import inference as AOP
-from dotenv import load_dotenv
-import os
-import traceback
+import contextvars
 import io
 import logging
+
+from flask import Flask, jsonify, request, send_file
+from dotenv import load_dotenv
+import pandas as pd
+import rpy2.robjects as robjects
+from rpy2.robjects.packages import importr
+
+from models.PipelineAlternative_clinicaldata.AI import inference as AI
+from models.PipelineAlternative_clinicaldata.AOP_models import inference as AOP
+from models.PipelineAlternative_clinicaldata.ML_apical import inference as ML
 
 load_dotenv()
 
@@ -16,6 +19,21 @@ app = Flask(__name__)
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+# R context management
+rpy2_context = contextvars.ContextVar('rpy2_context', default=None)
+
+# Load the mrgsolve and httk packages in R
+try:
+    mrgsolve = importr('mrgsolve')
+    httk = importr('httk')
+except Exception as e:
+    logger.error(f"Failed to import R packages: {e}")
+
+@app.before_request
+def before_request():
+    # Set the context for rpy2 conversions
+    rpy2_context.set(robjects.conversion.get_conversion())
 
 def validate_smiles(data):
     smiles = data.get("smiles")
@@ -111,5 +129,50 @@ def is_alive():
     logger.debug("Received isalive check")
     return jsonify({"status": "alive"})
 
+def run_r_model(script_path, function_name, *args):
+    try:
+        robjects.r.source(script_path)
+        r_func = robjects.globalenv[function_name]
+        result = r_func(*args)
+        return [list(row) for row in result]
+    except Exception as e:
+        logger.error(f"Error in R model simulation: {e}")
+        return None
+
+@app.route('/pbpk/doxorubicin', methods=['POST'])
+def run_doxorubicin_model():
+    data = request.json
+    dose_mg = float(data.get('dose_mg', 60))
+    age = int(data.get('age', 50))
+    weight = float(data.get('weight', 70))
+    height = float(data.get('height', 180))
+
+    current_context = contextvars.copy_context()
+    
+    py_output = current_context.run(run_r_model, 'models/PBPK/dox_script_mrgsolve.R', 'run_doxorubicin_model', dose_mg, age, weight, height)
+    
+    if py_output is None:
+        return jsonify({"error": "Failed to run doxorubicin model"}), 500
+    
+    return jsonify(py_output)
+
+@app.route('/pbpk/httk', methods=['POST'])
+def run_httk_model():
+    data = request.json
+    chem_name = data.get('chem_name', 'Bisphenol A')
+    species = data.get('species', 'human')
+    daily_dose = float(data.get('daily_dose', 1))
+    doses_per_day = int(data.get('doses_per_day', 1))
+    days = int(data.get('days', 15))
+
+    current_context = contextvars.copy_context()
+    
+    py_output = current_context.run(run_r_model, 'models/PBPK/httk/scripts/setup.r', 'run_httk_model', chem_name, species, daily_dose, doses_per_day, days)
+    
+    if py_output is None:
+        return jsonify({"error": "Failed to run httk model"}), 500
+    
+    return jsonify(py_output)
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=False, threaded=False)

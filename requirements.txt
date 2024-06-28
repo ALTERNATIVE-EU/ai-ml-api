@@ -7,3 +7,4 @@ rdkit==2023.9.5
 tensorflow==2.15.0
 xgboost==2.0.3
 gunicorn==22.0.0
+rpy2==3.5.16

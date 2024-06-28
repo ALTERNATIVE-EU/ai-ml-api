@@ -93,6 +93,29 @@ AOP:
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "c1ccccc1O"}' http://localhost:5000/clinicaldata/aop/evaluate
 ```
 
+Doxorubicin:
+
+```sh
+curl -X POST http://127.0.0.1:5000/pbpk/doxorubicin      -H "Content-Type: application/json"      -d '{
+           "dose_mg": 60,
+           "age": 50,
+           "weight": 70,
+           "height": 190
+         }'
+```
+
+HTTK:
+
+```sh
+curl -X POST http://127.0.0.1:5000/pbpk/httk -H "Content-Type: application/json"      -d '{
+           "chem_name": "Bisphenol A",
+           "species": "human",
+           "daily_dose": 1,
+           "doses_per_day": 1,
+           "days": 15
+         }'
+```
+
 IsAlive:
 
 ```sh
