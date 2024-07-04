@@ -1,73 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://url.com/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/deployment/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/deployment/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/repositories/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/repositories/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/scalability/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/scalability/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/testing/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/testing/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/api-usage/authentication/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/api-usage/authentication/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/api-usage/endpoints/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/api-usage/endpoints/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/api-usage/error-handling/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/api-usage/error-handling/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/overview/data-flow/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/overview/data-flow/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/overview/system-architecture/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/overview/system-architecture/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/security/authentication-and-authorization/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/security/authentication-and-authorization/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/security/encryption/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/security/encryption/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/token-management/ckan-integration/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/token-management/ckan-integration/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://url.com/token-management/token-lifecycle/</loc>
-         <lastmod>2024-07-03</lastmod>
+         <loc>https://platform.alternative-project.eu/token-management/token-lifecycle/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
