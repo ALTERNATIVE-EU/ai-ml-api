@@ -1,0 +1,81 @@
+site_name: AI/ML API Server Documentation
+site_url: https://platform.alternative-project.eu
+repo_url: https://github.com/ALTERNATIVE-EU/ai-ml-api
+repo_name: ALTERNATIVE-EU/ai-ml-api
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: pink
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: pink
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.superfences
+  - attr_list
+  - md_in_html
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Home: index.md
+  - Overview:
+    - System Architecture: overview/system-architecture.md
+    - Data Flow: overview/data-flow.md
+  - Security:
+    - Authentication and Authorization: security/authentication-and-authorization.md
+    - Encryption: security/encryption.md
+  - Token Management:
+    - CKAN Integration: token-management/ckan-integration.md
+    - Token Lifecycle: token-management/token-lifecycle.md
+  - API Usage:
+    - Endpoints: api-usage/endpoints.md
+    - Authentication: api-usage/authentication.md
+    - Error Handling: api-usage/error-handling.md
+  - Scalability: scalability.md
+  - Testing: testing.md
+  - Deployment: deployment.md
+  - Repositories: repositories.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ALTERNATIVE-EU
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/ALTERNATIVE_EU
+
+deploy:
+  provider: git
+  branch: gh-pages
+  message: "Deploying to GitHub Pages"
