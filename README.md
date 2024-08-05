@@ -67,7 +67,7 @@ docker run -p 5000:5000 ai-ml-api
 
 ## Deployment in Kubernetes
 
-Update the deployment files in the deployment/kubernetes directory, then apply them:
+Replace the `<image>` placeholder in `deployment/kubernetes/deployment.yaml` with your image name.
 
 ```sh
 kubectl apply -f deployment/kubernetes
