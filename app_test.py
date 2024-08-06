@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request, send_file
 from unittest.mock import patch, MagicMock
 from io import BytesIO
 import pandas as pd
+from app import run_r_model
 import json
 import os
 
@@ -16,12 +17,12 @@ class TestApp(unittest.TestCase):
         self.app.testing = True
 
     # /ml/evaluate tests
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.check_smiles")
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.import_models")
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.cddd_calculation")
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.ad_evaluation")
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.transform_data")
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.inference")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.import_models")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.cddd_calculation")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.ad_evaluation")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.transform_data")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.inference")
     @patch("pandas.merge")
     def test_ml_evaluate_valid(
         self,
@@ -50,26 +51,26 @@ class TestApp(unittest.TestCase):
     def test_ml_evaluate_no_smiles(self):
         response = self.app.post("/clinicaldata/ml/evaluate", json={})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {"error": "No SMILES input provided"})
+        self.assertEqual(response.json, {"error": "400 Bad Request: No SMILES input provided"})
 
     def test_ml_evaluate_empty_smiles(self):
         response = self.app.post("/clinicaldata/ml/evaluate", json={"smiles": ""})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {"error": "No SMILES input provided"})
+        self.assertEqual(response.json, {"error": "400 Bad Request: No SMILES input provided"})
 
-    @patch("PipelineAlternative_clinicaldata.ML_apical.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.ML_apical.inference.check_smiles")
     def test_ml_evaluate_check_smiles_exception(self, mock_check_smiles):
         mock_check_smiles.side_effect = Exception("Check SMILES Error")
         response = self.app.post("/clinicaldata/ml/evaluate", json={"smiles": "CCO"})
         self.assertEqual(response.status_code, 500)
-        self.assertIn("Check SMILES Error", response.get_data(as_text=True))
+        self.assertIn("Internal server error", response.get_data(as_text=True))
 
     # /ai/evaluate tests
-    @patch("PipelineAlternative_clinicaldata.AI.inference.check_smiles")
-    @patch("PipelineAlternative_clinicaldata.AI.inference.import_NLP_model")
-    @patch("PipelineAlternative_clinicaldata.AI.inference.prepare_smiles_NLP")
-    @patch("PipelineAlternative_clinicaldata.AI.inference.ad_evaluation")
-    @patch("PipelineAlternative_clinicaldata.AI.inference.inference_NLP")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.import_NLP_model")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.prepare_smiles_NLP")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.ad_evaluation")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.inference_NLP")
     def test_ai_evaluate_valid(
         self,
         mock_inference_NLP,
@@ -91,28 +92,28 @@ class TestApp(unittest.TestCase):
     def test_ai_evaluate_no_smiles(self):
         response = self.app.post("/clinicaldata/ai/evaluate", json={})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {"error": "No SMILES input provided"})
+        self.assertEqual(response.json, {"error": "400 Bad Request: No SMILES input provided"})
 
     def test_ai_evaluate_empty_smiles(self):
         response = self.app.post("/clinicaldata/ai/evaluate", json={"smiles": ""})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {"error": "No SMILES input provided"})
+        self.assertEqual(response.json, {"error": "400 Bad Request: No SMILES input provided"})
 
-    @patch("PipelineAlternative_clinicaldata.AI.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.AI.inference.check_smiles")
     def test_ai_evaluate_check_smiles_exception(self, mock_check_smiles):
         mock_check_smiles.side_effect = Exception("Check SMILES Error")
         response = self.app.post("/clinicaldata/ai/evaluate", json={"smiles": "CCO"})
         self.assertEqual(response.status_code, 500)
-        self.assertIn("Check SMILES Error", response.get_data(as_text=True))
+        self.assertIn("Internal server error", response.get_data(as_text=True))
 
 
     # /aop/evaluate tests
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.check_smiles")
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.import_models")
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.cddd_calculation")
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.ad_evaluation")
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.transform_data")
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.inference")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.import_models")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.cddd_calculation")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.ad_evaluation")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.transform_data")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.inference")
     @patch("pandas.merge")
     def test_aop_evaluate_valid(
         self,
@@ -141,19 +142,19 @@ class TestApp(unittest.TestCase):
     def test_aop_evaluate_no_smiles(self):
         response = self.app.post("/clinicaldata/aop/evaluate", json={})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {"error": "No SMILES input provided"})
+        self.assertEqual(response.json, {"error": "400 Bad Request: No SMILES input provided"})
 
     def test_aop_evaluate_empty_smiles(self):
         response = self.app.post("/clinicaldata/aop/evaluate", json={"smiles": ""})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {"error": "No SMILES input provided"})
+        self.assertEqual(response.json, {"error": "400 Bad Request: No SMILES input provided"})
 
-    @patch("PipelineAlternative_clinicaldata.AOP_models.inference.check_smiles")
+    @patch("models.PipelineAlternative_clinicaldata.AOP_models.inference.check_smiles")
     def test_aop_evaluate_check_smiles_exception(self, mock_check_smiles):
         mock_check_smiles.side_effect = Exception("Check SMILES Error")
         response = self.app.post("/clinicaldata/aop/evaluate", json={"smiles": "CCO"})
         self.assertEqual(response.status_code, 500)
-        self.assertIn("Check SMILES Error", response.get_data(as_text=True))
+        self.assertIn("Internal server error", response.get_data(as_text=True))
 
     # /isalive tests
     def test_isalive(self):
@@ -161,6 +162,123 @@ class TestApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json, {"status": "alive"})
 
+
+    # /pbpk/doxorubicin tests
+    @patch("app.run_r_model")
+    def test_doxorubicin_valid(self, mock_run_r_model):
+        mock_run_r_model.return_value = "output"
+
+        response = self.app.post("/pbpk/doxorubicin", json={"dose_mg": 60, "age": 50, "weight": 70, "height": 190})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json, "output")
+        
+    @patch("app.run_r_model")
+    def test_doxorubicin_no_params(self, mock_run_r_model):
+        mock_run_r_model.return_value = "output"        
+        response = self.app.post("/pbpk/doxorubicin", json={})
+        
+        response = self.app.post("/pbpk/doxorubicin", json={})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json, "output")
+        
+    def test_doxorubicin_invalid_params(self):
+        response = self.app.post("/pbpk/doxorubicin", json={"dose_mg": -1, "age": 50, "weight": 70, "height": 190})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json, {"error": "400 Bad Request: dose_mg must be a positive number"})
+        
+    @patch("app.run_r_model")
+    def test_doxorubicin_run_r_model_exception(self, mock_run_r_model):
+        mock_run_r_model.side_effect = Exception("Run R Model Error")
+        response = self.app.post("/pbpk/doxorubicin", json={"dose_mg": 60, "age": 50, "weight": 70, "height": 190})
+        self.assertEqual(response.status_code, 500)
+        self.assertIn("Internal server error", response.get_data(as_text=True))
+        
+    # /pbpk/httk tests
+    @patch("app.run_r_model")
+    def test_httk_valid(self, mock_run_r_model):
+        mock_run_r_model.return_value = "output"
+
+        response = self.app.post("/pbpk/httk", json={"chem_name": "Bisphenol A", "species": "human", "daily_dose": 1, "doses_per_day": 1, "days": 15})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json, "output")
+
+    @patch("app.run_r_model")
+    def test_httk_no_params(self, mock_run_r_model):
+        mock_run_r_model.return_value = "output"        
+        response = self.app.post("/pbpk/httk", json={})
+        
+        response = self.app.post("/pbpk/httk", json={})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json, "output")
+        
+        
+    def test_httk_invalid_params(self):
+        response = self.app.post("/pbpk/httk", json={"chem_name": "Bisphenol A", "species": "human", "daily_dose": -1, "doses_per_day": 1, "days": 15})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json, {"error": "400 Bad Request: daily_dose must be a positive number"})
+        
+    @patch("app.run_r_model")
+    def test_httk_run_r_model_exception(self, mock_run_r_model):
+        mock_run_r_model.side_effect = Exception("Run R Model Error")
+        response = self.app.post("/pbpk/httk", json={"chem_name": "Bisphenol A", "species": "human", "daily_dose": 1, "doses_per_day": 1, "days": 15})
+        self.assertEqual(response.status_code, 500)
+        self.assertIn("Internal server error", response.get_data(as_text=True))
+        
+    # run_r_model tests
+    @patch("rpy2.robjects.conversion.get_conversion")
+    @patch("rpy2.robjects.globalenv")
+    @patch("rpy2.robjects.r.source")
+    def test_run_r_model_valid(self, mock_source, mock_globalenv, mock_get_conversion):
+        mock_get_conversion.return_value = None
+        mock_source.return_value = None
+        mock_globalenv.__getitem__.return_value = MagicMock()
+        
+        output = run_r_model("script_path", "function_name", "arg1", "arg2")
+        self.assertEqual(output, [])
+        
+    @patch("rpy2.robjects.conversion.get_conversion")
+    @patch("rpy2.robjects.globalenv")
+    @patch("rpy2.robjects.r.source")
+    def test_run_r_model_exception(self, mock_source, mock_globalenv, mock_get_conversion):
+        mock_get_conversion.return_value = None
+        mock_source.side_effect = Exception("Run R Model Error")
+        mock_globalenv.__getitem__.return_value = MagicMock()
+        
+        output = run_r_model("script_path", "function_name", "arg1", "arg2")
+        self.assertEqual(output, None)
+        
+    @patch("rpy2.robjects.conversion.get_conversion")
+    @patch("rpy2.robjects.globalenv")
+    @patch("rpy2.robjects.r.source")
+    def test_run_r_model_no_conversion(self, mock_source, mock_globalenv, mock_get_conversion):
+        mock_get_conversion.return_value = None
+        mock_source.return_value = None
+        mock_globalenv.__getitem__.return_value = MagicMock()
+        
+        output = run_r_model("script_path", "function_name", "arg1", "arg2")
+        self.assertEqual(output, [])
+        
+    @patch("rpy2.robjects.conversion.get_conversion")
+    @patch("rpy2.robjects.globalenv")
+    @patch("rpy2.robjects.r.source")
+    def test_run_r_model_no_function(self, mock_source, mock_globalenv, mock_get_conversion):
+        mock_get_conversion.return_value = None
+        mock_source.return_value = None
+        mock_globalenv.__getitem__.side_effect = KeyError("Function not found")
+        
+        output = run_r_model("script_path", "function_name", "arg1", "arg2")
+        self.assertEqual(output, None)
+        
+    @patch("rpy2.robjects.conversion.get_conversion")
+    @patch("rpy2.robjects.globalenv")
+    @patch("rpy2.robjects.r.source")
+    def test_run_r_model_no_source(self, mock_source, mock_globalenv, mock_get_conversion):
+        mock_get_conversion.return_value = None
+        mock_source.side_effect = FileNotFoundError("File not found")
+        mock_globalenv.__getitem__.return_value = MagicMock()
+        
+        output = run_r_model("script_path", "function_name", "arg1", "arg2")
+        self.assertEqual(output, None)
 
 if __name__ == "__main__":
     unittest.main()

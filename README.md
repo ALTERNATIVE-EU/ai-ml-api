@@ -11,12 +11,14 @@ This is a API server which provides endpoints for AI/ML models.
 
 ## Installation
 
-Put the `PipelineAlternative_clinicaldata` and `cddd` directories in the root of the project.
+Put the `PipelineAlternative_clinicaldata` `models` directory.
+Put the `cddd` directories in the `PipelineAlternative_clinicaldata` directory.
+Put the `PBPK` directory in the `models` directory.
 
-Copy the content of `patches` directory into the `PipelineAlternative_clinicaldata` directory.
+Copy the content of `patches` directory into the `models` directory.
 
 ```sh
-cp -r patches/* ./
+cp -r patches/* ./models/
 ```
 
 Create cddd virtual environment and install dependencies:
@@ -89,6 +91,29 @@ AOP:
 
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "c1ccccc1O"}' http://localhost:5000/clinicaldata/aop/evaluate
+```
+
+Doxorubicin:
+
+```sh
+curl -X POST http://127.0.0.1:5000/pbpk/doxorubicin      -H "Content-Type: application/json"      -d '{
+           "dose_mg": 60,
+           "age": 50,
+           "weight": 70,
+           "height": 190
+         }'
+```
+
+HTTK:
+
+```sh
+curl -X POST http://127.0.0.1:5000/pbpk/httk -H "Content-Type: application/json"      -d '{
+           "chem_name": "Bisphenol A",
+           "species": "human",
+           "daily_dose": 1,
+           "doses_per_day": 1,
+           "days": 15
+         }'
 ```
 
 IsAlive:
