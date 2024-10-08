@@ -19,7 +19,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
 spec:
   rules:
-  - host: <host>
+  - host: ai-ml-api.platform.alternative-project.eu
     http:
       paths:
       - pathType: Prefix
@@ -31,5 +31,5 @@ spec:
               number: 80
   tls:
   - hosts:
-    - <host>
+    - ai-ml-api.platform.alternative-project.eu
     secretName: cert-ai-ml-api
