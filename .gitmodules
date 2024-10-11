@@ -1,0 +1,3 @@
+[submodule "models"]
+	path = models
+	url = git@github.com:ALTERNATIVE-EU/ai-ml-api-models.git
