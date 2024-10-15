@@ -107,6 +107,7 @@ jobs:
       # Checkout the repository and submodules
       - uses: actions/checkout@v3
         with:
+          ssh-key: "${{ secrets.SSH_PRIVATE_KEY }}"
           submodules: recursive  # Ensure submodules are checked out
 
       # Set up SSH key for accessing private submodule
