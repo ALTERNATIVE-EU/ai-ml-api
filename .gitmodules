@@ -1,6 +1,6 @@
 [submodule "models"]
 	path = models
-	url = git@github.com:ALTERNATIVE-EU/ai-ml-api-models.git
+	url = https://github.com/ALTERNATIVE-EU/ai-ml-api-models.git
 
 [submodule "models/PipelineAlternative_clinicaldata/cddd"]
 	path = models/PipelineAlternative_clinicaldata/cddd
