@@ -105,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checkout the repository and submodules
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ssh-key: "${{ secrets.SSH_PRIVATE_KEY }}"
           submodules: recursive  # Ensure submodules are checked out
