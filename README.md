@@ -11,10 +11,6 @@ This is a API server which provides endpoints for AI/ML models.
 
 ## Installation
 
-Put the `PipelineAlternative_clinicaldata` `models` directory.
-Put the `cddd` directories in the `PipelineAlternative_clinicaldata` directory.
-Put the `PBPK` directory in the `models` directory.
-
 Copy the content of `patches` directory into the `models` directory.
 
 ```sh
