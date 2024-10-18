@@ -122,7 +122,6 @@ jobs:
         id: version
         uses: PaulHatch/semantic-version@v5.4.0
         with:
-          tag_prefix: "v"
           minor_pattern: "^feat"  # Bump minor version if commit starts with 'feat'
           patch_pattern: "^fix"   # Bump patch version if commit starts with 'fix'
           default: patch          # Default bump if no match (patch)
