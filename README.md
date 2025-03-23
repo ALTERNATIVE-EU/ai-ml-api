@@ -38,7 +38,7 @@ conda activate alternative
 Install dependencies:
 
 ```sh
-pip install -f requirements.txt
+pip install -r requirements.txt
 ```
 
 Start the server:
