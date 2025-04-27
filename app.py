@@ -16,9 +16,25 @@ from models.PipelineAlternative_clinicaldata.ML_apical import inference as ML
 
 load_dotenv()
 
+# Define authorization model for Swagger
+authorizations = {
+    'Bearer': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization',
+        'description': "Type in the *'Value'* input box below: **'Bearer &lt;JWT&gt;'**, where JWT is the token"
+    }
+}
+
 app = Flask(__name__)
-api = Api(app, version='1.0', title='Clinical Data API',
-    description='A suite of clinical data evaluation endpoints', doc='/swagger')
+api = Api(app, 
+          version='1.0', 
+          title='Clinical Data API',
+          description='A suite of clinical data evaluation endpoints',
+          doc='/swagger', 
+          authorizations=authorizations,
+          security='Bearer'
+)
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -120,6 +136,7 @@ def generate_csv_response(merged_df):
 
 @ns_clinical.route('/ml/evaluate')
 class MLEvaluate(Resource):
+    @api.doc(security='Bearer')
     @api.expect(smiles_model)
     @api.response(200, 'Success', fields.String(description='CSV file with results'))
     @api.response(400, 'Bad Request', fields.String(description='Error message'))
@@ -149,6 +166,7 @@ class MLEvaluate(Resource):
 
 @ns_clinical.route('/ai/evaluate')
 class AIEvaluate(Resource):
+    @api.doc(security='Bearer')
     @api.expect(smiles_model)
     @api.response(200, 'Success', fields.String(description='Prediction result'))
     @api.response(400, 'Bad Request', fields.String(description='Error message'))
@@ -177,6 +195,7 @@ class AIEvaluate(Resource):
 
 @ns_clinical.route('/aop/evaluate')
 class AOPEvaluate(Resource):
+    @api.doc(security='Bearer')
     @api.expect(smiles_model)
     @api.response(200, 'Success', fields.String(description='CSV file with results'))
     @api.response(400, 'Bad Request', fields.String(description='Error message'))
@@ -216,6 +235,7 @@ def run_r_model(script_path, function_name, *args):
 
 @ns_pbpk.route('/doxorubicin')
 class DoxorubicinModel(Resource):
+    @api.doc(security='Bearer')
     @api.expect(doxorubicin_model)
     @api.response(200, 'Success', fields.String(description='Model output'))
     @api.response(400, 'Bad Request', fields.String(description='Error message'))
@@ -241,6 +261,7 @@ class DoxorubicinModel(Resource):
 
 @ns_pbpk.route('/httk')
 class HTTKModel(Resource):
+    @api.doc(security='Bearer')
     @api.expect(httk_model)
     @api.response(200, 'Success', fields.String(description='Model output'))
     @api.response(400, 'Bad Request', fields.String(description='Error message'))
@@ -266,6 +287,7 @@ class HTTKModel(Resource):
 
 @api.route('/isalive')
 class IsAlive(Resource):
+    @api.doc(security='Bearer')
     def get(self):
         logger.debug("Received isalive check")
         return {"status": "alive"}
