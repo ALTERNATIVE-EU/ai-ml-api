@@ -49,10 +49,12 @@ WORKDIR /app
 # Copy R package first (needed for installation)
 COPY ./models/PBPK/httk/modified_package_tar/httkfb2.tar /app/models/PBPK/httk/modified_package_tar/
 RUN R -e "install.packages('/app/models/PBPK/httk/modified_package_tar/httkfb2.tar', repos = NULL, type = 'source')"
+RUN R -e 'install.packages("httk", repos="https://cloud.r-project.org/")'
 
 # Copy Python requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 # Copy CDDD code and install
 COPY ./models/PipelineAlternative_clinicaldata/cddd /app/models/PipelineAlternative_clinicaldata/cddd

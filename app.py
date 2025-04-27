@@ -8,11 +8,15 @@ import contextvars
 import io
 import logging
 from werkzeug.exceptions import BadRequest
+import torch
 
 # Import your model modules here
 from models.PipelineAlternative_clinicaldata.AI import inference as AI
 from models.PipelineAlternative_clinicaldata.AOP_models import inference as AOP
 from models.PipelineAlternative_clinicaldata.ML_apical import inference as ML
+from models.PipelineAlternative_clinicaldata.ModelhERG import Inference as hERG
+from models.PipelineAlternative_clinicaldata.Multitask_deploy import inference as Multitask
+from models.PipelineAlternative_clinicaldata.AHRModel import inference as AHR
 
 load_dotenv()
 
@@ -133,6 +137,132 @@ def generate_csv_response(merged_df):
     output.seek(0)
     logger.debug("Generated CSV response")
     return send_file(output, mimetype='text/csv', as_attachment=True, download_name="results.csv")
+
+@ns_clinical.route('/herg/evaluate')
+class HERGEvaluate(Resource):
+    @api.expect(smiles_model)
+    @api.response(200, 'Success', fields.String(description='Prediction result'))
+    @api.response(400, 'Bad Request', fields.String(description='Error message'))
+    @api.response(500, 'Internal Server Error', fields.String(description='Error message'))
+    def post(self):
+        try:
+            data = request.json
+            smiles = validate_smiles(data)
+            
+            hERG.check_smiles(smiles)
+            logger.debug("SMILES validation passed")
+            model_hERG = hERG.import_models()
+            logger.debug("hERG model imported successfully")
+            target_CDDD = hERG.cddd_calculation(smiles, singlesmiles=True)
+            logger.debug("CDDD calculation completed")
+            data_test = target_CDDD.loc[:, model_hERG.feature_names_in_]
+            prediction = model_hERG.predict(data_test)
+            logger.debug(f"Prediction completed: {prediction!r}")
+            print("--- Prediction:", prediction[0])
+            prediction_list = prediction.tolist()  # Convert ndarray to Python list
+            data['hERG channel blockade activity predicted'] = prediction_list
+            data['applicability domain'] = hERG.localOutlierFactor_applicability_domain(data_test)
+            logger.debug("Prediction completed")
+            return {"prediction": prediction_list[0], "applicability_domain": data['applicability domain'][0]}
+        except BadRequest as e:
+            return {"error": str(e)}, 400
+        except Exception as e:
+            logger.error(f"Exception during hERG evaluation: {e}", exc_info=True)
+            return {"error": "Internal server error"}, 500
+
+@ns_clinical.route('/ahr/evaluate')
+class MultitaskEvaluate(Resource):
+    @api.expect(smiles_model)
+    @api.response(200, 'Success', fields.String(description='CSV file with results'))
+    @api.response(400, 'Bad Request', fields.String(description='Error message'))
+    @api.response(500, 'Internal Server Error', fields.String(description='Error message'))
+    def post(self):
+        try:
+            data = request.json
+            smiles = validate_smiles(data)
+            d = {'SMILES': [smiles]}
+            df = pd.DataFrame(data=d)
+
+            data = df
+            data_md_all = AHR.mordred_calculator(data)
+            print("Mordred descriptors calculated")
+            model, pipeline, train = AHR.import_model_pipeline()
+            print("Model and pipeline loaded")
+            numerical_cols = pipeline.feature_names_in_.tolist()
+            columns_for_model = model.feature_names_in_.tolist()
+            data_md_scaled = pd.DataFrame(pipeline.transform(data_md_all.loc[:, numerical_cols]), columns = numerical_cols).loc[:, columns_for_model]
+            
+            data['AHR_assesment'] = model.predict(data_md_scaled)
+            data['ApplicabilityDomain'] = AHR.localOutlierFactor_applicability_domain(train, data_md_scaled)
+            
+            # Return result as JSON
+            print(data.to_json(orient="records"))
+            
+            # Return results as JSON
+            results_json = data.to_dict(orient='records')
+            return jsonify(results_json[0])
+        except BadRequest as e:
+            return {"error": str(e)}, 400
+        except Exception as e:
+            logger.error(f"Exception during multitask evaluation: {e}", exc_info=True)
+            return {"error": "Internal server error"}, 500
+@ns_clinical.route('/multitask/evaluate')
+class MultitaskEvaluate(Resource):
+    @api.expect(smiles_model)
+    @api.response(200, 'Success', fields.String(description='CSV file with results'))
+    @api.response(400, 'Bad Request', fields.String(description='Error message'))
+    @api.response(500, 'Internal Server Error', fields.String(description='Error message'))
+    def post(self):
+        try:
+            tasks_names = ['Apical cardiotoxicity',
+                    'Aryl hydrocarbon receptor',
+                    'Cardiomyocyte Myocardial Injury',
+                    'Change Action Potential',
+                    'Change in Inotropy',
+                    'Change In Vasoactivity',
+                    'Endothelial injury coagulation',
+                    'hERG channels inhibitors',
+                    'Increase mitochondrial dysfunction',
+                    'Inhibition mitochondrial complexes',
+                    'OxidativeStress',
+                    'Valvular Injury Proliferation']
+            
+            data = request.json
+            smiles = validate_smiles(data)
+            
+            Multitask.check_smiles(smiles)
+            logger.debug("SMILES validation passed")
+            model, thr = Multitask.import_models()
+            logger.debug("Multitask model imported successfully")
+
+            target_CDDD = Multitask.cddd_calculation(smiles, singlesmiles=True)
+            print(f"{target_CDDD}done")
+
+            print("Model type:", type(model))
+            print("target_CDDD.columns: ", target_CDDD.columns)
+            data_test = torch.tensor(target_CDDD.drop(['original_smiles', 'SMILES'], axis=1).values, dtype=torch.float32)
+            x = {'CDDD': data_test}
+            prediction = model(x)
+            if prediction.shape[0] == 1:
+                results = pd.DataFrame((torch.sigmoid(prediction) > thr).numpy().squeeze().astype(int)).T
+                results.columns = tasks_names
+            else:
+                results = pd.DataFrame((torch.sigmoid(prediction) > thr).numpy().squeeze().astype(int), columns=tasks_names)
+
+            results_ = pd.concat([target_CDDD.loc[:, ['original_smiles', 'SMILES']], results], axis=1)
+            results['ApplicabilityDomain'] = Multitask.localOutlierFactor_applicability_domain(target_CDDD.drop(['original_smiles', 'SMILES'], axis=1).values)
+            
+            # remove prediction for the task that don't reach satisfactory results
+            results.drop(['Inhibition mitochondrial complexes'], axis=1, inplace=True)
+            
+            # Return results as JSON
+            results_json = results.to_dict(orient='records')
+            return jsonify(results_json[0])
+        except BadRequest as e:
+            return {"error": str(e)}, 400
+        except Exception as e:
+            logger.error(f"Exception during multitask evaluation: {e}", exc_info=True)
+            return {"error": "Internal server error"}, 500
 
 @ns_clinical.route('/ml/evaluate')
 class MLEvaluate(Resource):
