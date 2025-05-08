@@ -53,7 +53,9 @@ RUN R -e 'install.packages("httk", repos="https://cloud.r-project.org/")'
 
 # Copy Python requirements and install
 COPY requirements.txt .
+COPY requirements-tktd.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements-tktd.txt
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 # Copy CDDD code and install

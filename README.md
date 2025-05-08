@@ -71,35 +71,35 @@ kubectl apply -f deployment/kubernetes
 
 ## Usage
 
-ML:
+### ML:
 
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "c1ccccc1O"}' http://localhost:5000/clinicaldata/ml/evaluate -o results.csv
 ```
 
-AI:
+### AI:
 
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "c1ccccc1O"}' http://localhost:5000/clinicaldata/ai/evaluate
 ```
 
-AOP:
+### AOP:
 
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "c1ccccc1O"}' http://localhost:5000/clinicaldata/aop/evaluate
 ```
 
-hERG
+### hERG
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "c1ccccc1O"}' http://localhost:5000/clinicaldata/herg/evaluate
 ```
 
-Multitask
+### Multitask
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "C2C(N=Cc1ccccc1)=C(N(N2c3ccccc3)C)C"}' http://localhost:5000/clinicaldata/multitask/evaluate
 ```
 
-AHR
+### AHR
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "C1=CC2=C(C(=C1)O)C(=O)C3=C(C2=O)C=C(C=C3O)CO"}' http://localhost:5000/clinicaldata/ahr/evaluate
 ```
@@ -115,7 +115,7 @@ curl -X POST http://127.0.0.1:5000/pbpk/doxorubicin      -H "Content-Type: appli
          }'
 ```
 
-HTTK:
+### HTTK:
 
 ```sh
 curl -X POST http://127.0.0.1:5000/pbpk/httk -H "Content-Type: application/json"      -d '{
@@ -125,6 +125,39 @@ curl -X POST http://127.0.0.1:5000/pbpk/httk -H "Content-Type: application/json"
            "doses_per_day": 1,
            "days": 15
          }'
+```
+
+TD:
+
+### Proteomics:
+
+```sh
+curl -X 'POST' \
+  'http://localhost:5000/TD/proteomics/evaluate' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "compound": "DOX",
+  "protein": "B8ZZL8"
+}'
+
+curl -X 'POST' \
+  'http://localhost:5000/TD/proteomics/evaluate' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "compound": "ROT",
+  "protein": "D6RF35"
+}'
+
+curl -X 'POST' \
+  'http://localhost:5000/TD/proteomics/evaluate' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "compound": "AMI",
+  "protein": "D6RF35"
+}'
 ```
 
 IsAlive:
