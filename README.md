@@ -11,10 +11,6 @@ This is a API server which provides endpoints for AI/ML models.
 
 ## Installation
 
-Put the `PipelineAlternative_clinicaldata` `models` directory.
-Put the `cddd` directories in the `PipelineAlternative_clinicaldata` directory.
-Put the `PBPK` directory in the `models` directory.
-
 Copy the content of `patches` directory into the `models` directory.
 
 ```sh
@@ -42,7 +38,7 @@ conda activate alternative
 Install dependencies:
 
 ```sh
-pip install -f requirements.txt
+pip install -r requirements.txt
 ```
 
 Start the server:
@@ -75,22 +71,37 @@ kubectl apply -f deployment/kubernetes
 
 ## Usage
 
-ML:
+### ML:
 
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "c1ccccc1O"}' http://localhost:5000/clinicaldata/ml/evaluate -o results.csv
 ```
 
-AI:
+### AI:
 
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "c1ccccc1O"}' http://localhost:5000/clinicaldata/ai/evaluate
 ```
 
-AOP:
+### AOP:
 
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '{"smiles": "c1ccccc1O"}' http://localhost:5000/clinicaldata/aop/evaluate
+```
+
+### hERG
+```sh
+curl -X POST -H "Content-Type: application/json" -d '{"smiles": "c1ccccc1O"}' http://localhost:5000/clinicaldata/herg/evaluate
+```
+
+### Multitask
+```sh
+curl -X POST -H "Content-Type: application/json" -d '{"smiles": "C2C(N=Cc1ccccc1)=C(N(N2c3ccccc3)C)C"}' http://localhost:5000/clinicaldata/multitask/evaluate
+```
+
+### AHR
+```sh
+curl -X POST -H "Content-Type: application/json" -d '{"smiles": "C1=CC2=C(C(=C1)O)C(=O)C3=C(C2=O)C=C(C=C3O)CO"}' http://localhost:5000/clinicaldata/ahr/evaluate
 ```
 
 Doxorubicin:
@@ -104,7 +115,7 @@ curl -X POST http://127.0.0.1:5000/pbpk/doxorubicin      -H "Content-Type: appli
          }'
 ```
 
-HTTK:
+### HTTK:
 
 ```sh
 curl -X POST http://127.0.0.1:5000/pbpk/httk -H "Content-Type: application/json"      -d '{
@@ -114,6 +125,39 @@ curl -X POST http://127.0.0.1:5000/pbpk/httk -H "Content-Type: application/json"
            "doses_per_day": 1,
            "days": 15
          }'
+```
+
+TD:
+
+### Proteomics:
+
+```sh
+curl -X 'POST' \
+  'http://localhost:5000/TD/proteomics/evaluate' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "compound": "DOX",
+  "protein": "B8ZZL8"
+}'
+
+curl -X 'POST' \
+  'http://localhost:5000/TD/proteomics/evaluate' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "compound": "ROT",
+  "protein": "D6RF35"
+}'
+
+curl -X 'POST' \
+  'http://localhost:5000/TD/proteomics/evaluate' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "compound": "AMI",
+  "protein": "D6RF35"
+}'
 ```
 
 IsAlive:
